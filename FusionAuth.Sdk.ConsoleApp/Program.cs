@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using FusionAuth.Sdk;
+﻿using FusionAuth.Sdk;
 using FusionAuth.Sdk.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Kiota.Abstractions;

@@ -30,7 +30,7 @@ builder.Services
     .AddOpenIdConnect(FusionAuthManager.FusionAuthScheme, _ =>
     {
         // FusionAuthOpenIdConnectOptions (which we registered above) did the necessary configuration of the OpenIdConnect
-        // You can override the certain configuration here if needed
+        // You can override certain configuration here if needed
     })
     .AddExternalCookie()
     .Configure(o =>
