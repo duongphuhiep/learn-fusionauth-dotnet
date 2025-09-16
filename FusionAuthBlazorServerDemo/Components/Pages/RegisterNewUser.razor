@@ -1,0 +1,93 @@
+@page "/Account/Register"
+@using FusionAuth.Sdk
+@using FusionAuth.Sdk.Models
+@using Microsoft.Extensions.Options
+@using Microsoft.Kiota.Abstractions.Serialization
+@using Microsoft.Kiota.Serialization
+@rendermode InteractiveServer
+
+<h3>Register New User</h3>
+
+@if (!_isSubmitted)
+{
+    <form @onsubmit="HandleSubmit">
+        <div>Email: <input @bind="_email" required/></div>
+        <div>Full Name: <input @bind="_fullName" required/></div>
+        <div>Password: <input @bind="_password" required/></div>
+        <div>Role:
+            <select @bind="_userRole">
+                <option value="employee" selected>Employee</option>
+                <option value="manager">Manager</option>
+                <option value="consultant_ext">External Consultant</option>
+            </select>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+}
+else
+{
+    <div>
+        <h4>Registration Result</h4>
+        
+        <pre>
+@_registrationResult
+        </pre>
+
+        <div class="text-danger">@_errorMsg</div>
+        
+        <p><strong>Email:</strong> @_email</p>
+        <p><strong>Full Name:</strong> @_fullName</p>
+        <p><strong>Role:</strong> @_userRole</p>
+    </div>
+}
+
+@inject FusionAuthClient fusionAuthClient
+@inject IOptions<FusionAuthConfig> fusionAuthConfigOption
+@inject ILogger<RegisterNewUser> logger
+
+@code {
+    // These properties will hold the values from the input fields
+    private string? _email;
+    private string? _fullName;
+    private string? _password;
+    private string? _userRole = "employee";
+    private string? _registrationResult;
+    private string? _errorMsg;
+
+    // A flag to control which content is displayed
+    private bool _isSubmitted;
+
+    // This method is called when the form is submitted
+    private async Task HandleSubmit()
+    {
+        // Set the flag to true to display the submitted information
+        _isSubmitted = true;
+        try
+        {
+            var response = await fusionAuthClient.Api.User.Registration.PostAsync(new RegistrationRequest()
+            {
+                Registration = new UserRegistration
+                {
+                    Roles = new UntypedArray([new UntypedString("employee")]),
+                    ApplicationId = new Guid(fusionAuthConfigOption.Value.ClientId),
+                },
+                User = new User
+                {
+                    Email = _email,
+                    FullName = _fullName,
+                    Password = _password,
+                },
+                /*verify with email in mailcatcher: localhost:1080*/
+                SkipRegistrationVerification = false,
+                SkipVerification = false,
+            });
+
+            _registrationResult = response is null ? null : await response.SerializeAsJsonStringAsync();
+        }
+        catch (Errors ex)
+        {
+            logger.LogWarning(ex, "Unable to register new user");
+            _errorMsg = $"Unable to register new user. {ex.Message}";
+        }
+    }
+}

@@ -1,0 +1,25 @@
+﻿@page "/"
+@using FusionAuth.Sdk
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Kiota.Serialization
+
+@attribute [AllowAnonymous]
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+@* <pre>@apiStatus</pre> *@
+@* @inject FusionAuthClient fusionAuthClient *@
+@* @code  *@
+@* { *@
+@*     private string? apiStatus; *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         await base.OnInitializedAsync(); *@
+@*         var apiStatusResponse = await fusionAuthClient.Api.Status.GetAsync(); *@
+@*         apiStatus = await apiStatusResponse!.SerializeAsJsonStringAsync(); *@
+@*     } *@
+@* } *@

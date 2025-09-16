@@ -1,0 +1,33 @@
+# Caddyfile for FusionAuth
+localhost {
+    # Enable HTTPS automatically (Caddy handles TLS certificates)
+    tls duongphuhiep@mailinator.com
+
+    # Reverse proxy to FusionAuth running on localhost:9011
+    reverse_proxy fusionauth:9011 {
+        # Set headers required by FusionAuth for proper proxying
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host {host}
+        header_up X-Forwarded-For {remote}
+        header_up Host {host}
+
+        # Optional: Health check for the backend
+        health_path /api/status
+        health_interval 30s
+        health_timeout 5s
+    }
+
+    # # Optional: Enable compression for responses
+    # encode gzip
+
+    # # Optional: Log requests for debugging
+    # log {
+    #     output file /var/log/caddy/fusionauth.log
+    #     format json
+    # }
+
+    # # Optional: Handle custom error pages
+    # handle_errors {
+    #     respond "Error: {http.error.status_code} {http.error.status_text}" 404 500
+    # }
+}

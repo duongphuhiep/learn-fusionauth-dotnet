@@ -1,0 +1,76 @@
+﻿@page "/auth"
+@using System.Security.Claims
+@using FusionAuth.Sdk
+@using FusionAuth.Sdk.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Options
+
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<PageTitle>Auth</PageTitle>
+
+<h1>You are authenticated</h1>
+
+<AuthorizeView>
+    Hello @context.User.Identity?.Name!
+    <div>
+        <div>UserId: @_userId</div>
+        <div>TenantId: @_tenantId</div>
+        <div>Email: @_email</div>
+        <div>AuthenticationType: @context.User.Identity?.AuthenticationType</div>
+        <div>All Roles: @string.Join(",", _roles ?? [])</div>
+        <ul>
+            <li>Is in role Admin: @context.User.IsInRole("admin")</li>
+            <li>Is in role Employee: @context.User.IsInRole("employee")</li>
+        </ul>
+        <div>All Claims:</div>
+        <ul>
+            @foreach (var c in context.User.Claims)
+            {
+                <li>@c.Type : @c.Value</li>
+            }
+        </ul>
+        <div>
+            <button @onclick="UnregisterApplicationHandle">Unregister the Application</button>
+        </div>
+        <div>
+            <button @onclick="DeleteUserHandle">Delete User</button>
+
+            <input type="checkbox" @bind="_hardDelete"/> Hard Delete
+        </div>
+    </div>
+</AuthorizeView>
+
+@inject FusionAuthClient fusionAuthClient
+@inject IOptions<FusionAuthConfig> fusionAuthConfigOption
+@inject ILogger<Auth> logger
+@inject AuthenticationStateProvider authStateProvider
+
+@code {
+    private string? _userId;
+    private string? _tenantId;
+    private string? _email;
+    private IEnumerable<string>? _roles;
+    private bool _hardDelete;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        _userId = user.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+        _tenantId = user.FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid");
+        _email = user.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
+        _roles = user.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").Select(c => c.Value);
+    }
+
+    private async Task UnregisterApplicationHandle()
+    {
+        await fusionAuthClient.Api.User.Registration[_userId][fusionAuthConfigOption.Value.ClientId].DeleteAsync(new RegistrationDeleteRequest());
+    }
+
+    private async Task DeleteUserHandle()
+    {
+        await fusionAuthClient.Api.User[_userId].DeleteAsync(new UserDeleteSingleRequest() { HardDelete = _hardDelete });
+    }
+}
