@@ -49,32 +49,37 @@ You can then configure FusionAuth to add Passwordless or Passkey login with zero
 
   * **Customization Capabilities** 🎨
   	There are 2 integration methods: [Hosted login .vs Api login](https://fusionauth.io/docs/get-started/core-concepts/hosted-login-vs-api-login)
-    I evaluated the recommended [Hosted login](https://fusionauth.io/docs/get-started/core-concepts/integration-points#hosted-login-pages). 
-	Unlike many AAAS solutions that limit branding and customization, FusionAuth allows [simple theming](https://fusionauth.io/docs/customize/look-and-feel/simple-theme-editor) or [extensive theming through FreeMarker](https://fusionauth.io/docs/customize/look-and-feel/advanced-theme-editor). You can even [develop custom themes locally with DaisyUI or TailwindCSS and upload them to your (self-hosted) FusionAuth via the API](https://fusionauth.io/docs/customize/look-and-feel/tailwind). While this requires some effort, the level of control is a significant advantage. [Email template customization](https://fusionauth.io/docs/customize/email-and-messages/configuring-application-specific-email-templates) and internationalization are also first-class features.	
-  
+    I evaluated the recommended [Hosted login](https://fusionauth.io/docs/get-started/core-concepts/integration-points#hosted-login-pages).
+	Unlike many AAAS solutions that limit branding and customization, FusionAuth allows [simple theming](https://fusionauth.io/docs/customize/look-and-feel/simple-theme-editor) or [extensive theming through FreeMarker](https://fusionauth.io/docs/customize/look-and-feel/advanced-theme-editor). You can even [develop custom themes locally with DaisyUI or TailwindCSS and upload them to your (self-hosted) FusionAuth via the API](https://fusionauth.io/docs/customize/look-and-feel/tailwind). While this requires some effort, the level of control is a significant advantage. [Email template customization](https://fusionauth.io/docs/customize/email-and-messages/configuring-application-specific-email-templates) and internationalization are also first-class features.
+
   * **The Kickstart Script** 🤖
     Kickstart is excellent for CI/CD pipelines, letting you consistently configure FusionAuth before integration tests.
-	
+
   * **Documentation and the "ASK AI" Button** 📖
-  	The documentation is clear and beginner-friendly, as shown in the [quickstart guide](https://fusionauth.io/docs/quickstarts/quickstart-dotnet-web). 
+  	The documentation is clear and beginner-friendly, as shown in the [quickstart guide](https://fusionauth.io/docs/quickstarts/quickstart-dotnet-web).
 	The "Ask AI" button is very useful.
-    
+
+  * **No "Contact Us" for Enterprise Plan** 💰
+
 ### What I Don't Like
 
   * **Current .NET SDK** 😔
     The current .NET SDK doesn't feel production-ready. See: [GitHub Issue](https://github.com/FusionAuth/fusionauth-netcore-client/issues/145).
-	
+
   * **OpenAPI Specs** 📝
     The OpenAPI specification for the API is not exposed with the API itself; it's in a separate repository. This leads to the specifications not being in sync with the API, making them much less useful. This issue has been noted on GitHub: [FusionAuth OpenAPI Issue](https://github.com/FusionAuth/fusionauth-openapi/issues). The project's statement that they are "publishing this to see how useful the FusionAuth community finds it" suggests the OpenAPI spec is not a high priority.
-	
+
   * **OpenSearch Dependency** 🕵️
     FusionAuth relies on OpenSearch. I'm skeptical because I'm not a fan of ElasticSearch-based tech.
-	
+
+  * **No free plan for cloud hosting** 💰
+    If you want to "taste" FusionAuth on production then self hosting is the only option.
+
   * **Paid-Only Core Features** 💰
     Some features that should be default are paid-only. For example: `Unverified behavior: Gated`. By default, users can log in even if their registration isn't verified. Blocking this requires a paid plan.
-	
+
 	IMO if the registration is not verified, the user should not be able to log in by default. FusionAuth would suggest "registration auto-verification" so that the registration is verified automatically when it is created.
-	
+
     My guess is this is due to backward compatibility for recently introduced features. Still, it means other important core features might also be paid-only. Carefully check the features you'll need.
 
 ## Conclusion
@@ -83,4 +88,3 @@ You can then configure FusionAuth to add Passwordless or Passkey login with zero
 
 [FusionAuth]: https://fusionauth.io
 [FusionAuthBlazorServerDemo]: ./FusionAuthBlazorServerDemo
-
